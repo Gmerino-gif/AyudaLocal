@@ -24,8 +24,46 @@ app.get("/login.html", authorization.soloPublico, (req, res) => res.sendFile(__d
 app.get("/register.html", authorization.soloPublico, (req, res) => res.sendFile(__dirname + "/pages/register.html"));
 app.get("/admin.html", authorization.soloAdmin, (req, res) => res.sendFile(__dirname + "/pages/admin/admin.html"));
 app.get("/dashboard.html", authorization.soloAdmin, (req, res) => res.sendFile(__dirname + "/pages/admin/dashboard.html"));
+app.get("/formulario-solicitante.html", authorization.soloPublico, (req, res) => res.sendFile(__dirname + "/pages/admin/formulario-solicitante.html"));
+app.get("/formulario-donante.html", authorization.soloPublico, (req, res) => res.sendFile(__dirname + "/pages/admin/formulario-donante.html"));
 app.post("/api/login", authentication.login);
-app.post("/api/register", authentication.register);
+//app.post("/api/register", authentication.register);
+
+app.post("/api/register", async (req, res) => {
+    const { nombre, user, email, telefono, password, confirmPassword } = req.body;
+    if (!nombre || !user || !email || !telefono || !password || !confirmPassword) {
+        return res.status(400).json({ status: "Error", message: "Faltan datos" });
+    }
+
+    if (password !== confirmPassword) {
+        return res.status(400).json({ status: "Error", message: "Las contraseñas no coinciden" });
+    }
+
+    const usuariosPath = path.join(__dirname, "data", "usuarios.json");
+
+    // Leer usuarios existentes
+    let usuarios = [];
+    try {
+        const data = await fs.readFile(usuariosPath, "utf-8");
+        usuarios = JSON.parse(data);
+    } catch (err) {
+        usuarios = [];
+    }
+
+    // Verificar si el usuario o email ya existe
+    const existe = usuarios.some(u => u.user === user || u.email === email);
+    if (existe) {
+        return res.status(400).json({ status: "Error", message: "Usuario o email ya registrado" });
+    }
+
+    // Agregar nuevo usuario con todos los campos
+    usuarios.push({ nombre, user, email, telefono, password });
+
+    // Guardar en el archivo
+    await fs.writeFile(usuariosPath, JSON.stringify(usuarios, null, 2));
+
+    return res.status(201).json({ status: "Ok", message: "Usuario registrado correctamente", redirect: "/login.html" });
+});
 
 // Nuevas rutas para manejo de formularios
 app.post("/api/solicitudes", authorization.soloAdmin, async (req, res) => {

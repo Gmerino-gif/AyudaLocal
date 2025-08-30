@@ -1,0 +1,16 @@
+[
+  {
+    "nombre": "juan perez",
+    "user": "jperez",
+    "email": "j@perez.com",
+    "telefono": "3222222",
+    "password": "abc123"
+  },
+  {
+    "nombre": "jhon doe",
+    "user": "jdoe",
+    "email": "j@doe.com",
+    "telefono": "3111111",
+    "password": "cba321"
+  }
+]
