@@ -1,0 +1,74 @@
+[
+  {
+    "cedula": "12345678",
+    "nombre": "Luis Lopez",
+    "telefono": "3222222",
+    "email": "l@luis.com",
+    "tipo_ayuda": "medicamentos",
+    "descripcion": "Necesito acetaminofen",
+    "direccion": "calle 26 # 45-67 Soledad",
+    "urgente": true,
+    "estado": "pendiente",
+    "fecha_creacion": "2025-08-31 20:15:11"
+  },
+  {
+    "cedula": "123456789",
+    "nombre": "Alejandro Martinez",
+    "telefono": "3333333",
+    "email": "a@ale.com",
+    "tipo_ayuda": "alimentos",
+    "descripcion": "necesito alimentos",
+    "direccion": "CALLE 21 #16-42 Barranquilla",
+    "urgente": true,
+    "estado": "pendiente",
+    "fecha_creacion": "2025-08-31 20:19:22"
+  },
+  {
+    "cedula": "987654321",
+    "nombre": "Juan Abrams",
+    "telefono": "355555",
+    "email": "j@jhon.com",
+    "tipo_ayuda": "vivienda",
+    "descripcion": "necesito albergue",
+    "direccion": "Calle 72 # 54-32 Barranquilla",
+    "urgente": false,
+    "estado": "pendiente",
+    "fecha_creacion": "2025-08-31 20:22:33"
+  },
+  {
+    "cedula": "852147",
+    "nombre": "Shirly Gomez",
+    "telefono": "344444",
+    "email": "j@juan.com",
+    "tipo_ayuda": "ropa",
+    "descripcion": "necesito ropa",
+    "direccion": "Carrera 17 # 11-12 Malambo",
+    "urgente": false,
+    "estado": "pendiente",
+    "fecha_creacion": "2025-08-31 20:45:41"
+  },
+  {
+    "cedula": "874512",
+    "nombre": "Maria Perez",
+    "telefono": "3569874",
+    "email": "m@maria.com",
+    "tipo_ayuda": "vivienda",
+    "descripcion": "necesito un albergue temporal",
+    "direccion": "Cra. 7 # 44B-20 Barranquilla",
+    "urgente": true,
+    "estado": "pendiente",
+    "fecha_creacion": "2025-08-31 21:23:21"
+  },
+  {
+    "cedula": "77885544",
+    "nombre": "Linda Ramirez",
+    "telefono": "3242123",
+    "email": "l@leda.com",
+    "tipo_ayuda": "alimentos",
+    "descripcion": "necesito 3 libras de pollo",
+    "direccion": "Cra. 17, 40-2 Soledad",
+    "urgente": true,
+    "estado": "pendiente",
+    "fecha_creacion": "2025-08-31 21:25:02"
+  }
+]

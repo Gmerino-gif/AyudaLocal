@@ -7,48 +7,74 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
     <style>
-
-
-        
-        .progress-steps {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 2rem;
-            position: relative;
+        :root {
+            --primary-color: #4b6cb7;
+            --secondary-color: #6494eda0;
+            --accent-color: #3a5a9c;
+            --text-color: #2c3e50;
+            --light-bg: #f8f9fa;
         }
-        
-        .progress-steps::before {
-            content: "";
-            position: absolute;
-            top: 50%;
-            left: 0;
-            right: 0;
-            height: 4px;
-            background: #e9ecef;
-            z-index: 1;
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa;
         }
-        
-        .step {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: #e9ecef;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #6c757d;
-            font-weight: bold;
+        .hero-section {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: 0 0 20px 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .form-container {
+            max-width: 500px;
+            margin: -50px auto 30px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+            padding: 2.5rem;
             position: relative;
             z-index: 2;
         }
-        
-        .step.active {
-            background: var(--primary-color);
-            color: white;
+        .form-header {
+            color: var(--primary-color);
+            border-bottom: 3px solid var(--primary-color);
+            padding-bottom: 12px;
+            margin-bottom: 25px;
+            text-align: center;
+            font-weight: 700;
         }
-        
-        .form-floating label {
-            color: #6c757d;
+        .btn-primary-custom {
+            background-color: var(--primary-color);
+            color: white;
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        .btn-primary-custom:hover {
+            background-color: var(--accent-color);
+            transform: translateY(-2px);
+        }
+        .feature-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+            border-left: 4px solid var(--primary-color);
+        }
+        .feature-card h5 {
+            color: var(--primary-color);
+        }
+        .nav-pills .nav-link.active {
+            background-color: var(--primary-color);
+        }
+        .input-group-text {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
         }
     </style>
 </head>
@@ -60,60 +86,51 @@
 
     <div class="container">
         <div class="form-container">
-            <div class="progress-steps">
-                <div class="step active">1</div>
-                <div class="step">2</div>
-                <div class="step">3</div>
-            </div>
-            
             <h2 class="form-header"><i class="bi bi-person-lines-fill"></i> Crear Cuenta</h2>
-            
             <form id="register-form">
-                <div class="row g-3">
-                    <div class="col-md-6">
-                        <div class="form-floating mb-3">
-                            <input type="text" class="form-control" id="nombre" name="nombre" placeholder="Nombre" required>
-                            <label for="nombre">Nombre completo</label>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-floating mb-3">
-                            <input type="email" class="form-control" id="email" name="email" placeholder="Correo" required>
-                            <label for="email">Correo electrónico</label>
-                        </div>
+                <div class="mb-4">
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-person"></i></span>
+                        <input type="text" class="form-control" id="nombre" name="nombre" placeholder="Nombre completo" required>
                     </div>
                 </div>
-                
-                <div class="row g-3">
-                    <div class="col-md-6">
-                        <div class="form-floating mb-3">
-                            <input type="text" class="form-control" id="usuario" name="usuario" placeholder="Usuario" required>
-                            <label for="usuario">Nombre de usuario</label>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-floating mb-3">
-                            <input type="tel" class="form-control" id="telefono" name="telefono" placeholder="Teléfono">
-                            <label for="telefono">Teléfono de contacto</label>
-                        </div>
+                <div class="mb-4">
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-envelope"></i></span>
+                        <input type="email" class="form-control" id="email" name="email" placeholder="Correo electrónico" required>
                     </div>
                 </div>
-                
-                <div class="row g-3">
-                    <div class="col-md-6">
-                        <div class="form-floating mb-3">
-                            <input type="password" class="form-control" id="password" name="password" placeholder="Contraseña" required>
-                            <label for="password">Contraseña</label>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-floating mb-3">
-                            <input type="password" class="form-control" id="confirm-password" name="confirm-password" placeholder="Confirmar" required>
-                            <label for="confirm-password">Confirmar contraseña</label>
-                        </div>
+                <div class="mb-4">
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-person-badge"></i></span>
+                        <input type="text" class="form-control" id="usuario" name="usuario" placeholder="Nombre de usuario" required>
                     </div>
                 </div>
-                
+                <div class="mb-4">
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-telephone"></i></span>
+                        <input type="tel" class="form-control" id="telefono" name="telefono" placeholder="Teléfono de contacto">
+                    </div>
+                </div>
+                <div class="mb-4">
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-lock"></i></span>
+                        <input type="password" class="form-control" id="password" name="password" placeholder="Contraseña" required>
+                    </div>
+                </div>
+                <div class="mb-4">
+                    <div class="input-group">
+                        <!--<span class="input-group-text"><i class="bi bi-lock-fill"></i></span>
+                        <input type="password" class="form-control" id="confirm-password" name="confirm-password" placeholder="Confirmar contraseña" required>-->
+                    <label for="rol" class="form-label">Selecciona tu Rol</label>
+                    <select class="form-select" id="rol" required>
+                    <option value="">Seleccione una opción</option>
+                        <option value="solicitante">Solicitante</option>
+                        <option value="donante">Donante</option>
+                        <option value="otro">Otro</option>
+                    </select>
+                    </div>
+                </div>
                 <div class="mb-4">
                     <div class="form-check">
                         <input class="form-check-input" type="checkbox" id="terms" required>
@@ -122,13 +139,11 @@
                         </label>
                     </div>
                 </div>
-                
                 <div class="d-grid gap-2 mb-3">
                     <button type="submit" class="btn btn-primary-custom">
                         <i class="bi bi-person-plus-fill"></i> Completar Registro
                     </button>
                 </div>
-                
                 <div class="text-center">
                     <p>¿Ya tienes cuenta? <a href="/login.html" class="fw-bold">Inicia sesión</a></p>
                 </div>

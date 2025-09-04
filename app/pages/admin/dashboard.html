@@ -165,17 +165,17 @@
                 <div class="card text-center">
                     <div class="card-body">
                         <h5 class="card-title">Solicitudes Activas</h5>
-                        <div class="stats-number">142</div>
-                        <p class="text-muted">+12 esta semana</p>
+                        <div class="stats-number" id="solicitudes-activas">...</div>
+                        <!-- <p class="text-muted">+12 esta semana</p> -->
                     </div>
                 </div>
             </div>
             <div class="col-md-4">
                 <div class="card text-center">
                     <div class="card-body">
-                        <h5 class="card-title">Ayudas Completadas</h5>
-                        <div class="stats-number">89</div>
-                        <p class="text-muted">+8 esta semana</p>
+                        <h5 class="card-title">Donaciones registradas</h5>
+                        <div class="stats-number" id="donaciones-activas">...</div>
+                        <!-- <p class="text-muted">+8 esta semana</p> -->
                     </div>
                 </div>
             </div>
@@ -183,8 +183,9 @@
                 <div class="card text-center">
                     <div class="card-body">
                         <h5 class="card-title">Voluntarios Activos</h5>
-                        <div class="stats-number">56</div>
-                        <p class="text-muted">+5 nuevos</p>
+                        <!--<div class="stats-number">56</div>-->
+                        <div class="stats-number" id="voluntarios-activos">...</div>
+                        <!-- <p class="text-muted">+5 nuevos</p> -->
                     </div>
                 </div>
             </div>
@@ -372,21 +373,152 @@
     <script>
         // Inicializar mapa
         const map = L.map('map').setView([10.9639, -74.7964], 12); // Coordenadas de Barranquilla
-        
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         }).addTo(map);
 
-        // Marcadores de ejemplo
-        L.marker([10.9639, -74.7964]).addTo(map)
-            .bindPopup('<b>Solicitud de alimentos</b><br>Barrio El Prado')
-            .openPopup();
+        // Cargar y mostrar marcadores reales desde solicitantes.json
+        async function cargarMarcadoresSolicitantes() {
+            try {
+                const res = await fetch('/api/solicitantes_recientes');
+                const data = await res.json();
+                for (const s of data) {
+                    if (s.direccion) {
+                        // Esperar 1 segundo entre peticiones para evitar bloqueo de Nominatim
+                        await new Promise(resolve => setTimeout(resolve, 1000));
+                        try {
+                            const geoRes = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(s.direccion + ', Atlántico, Colombia')}`);
+                            const locations = await geoRes.json();
+                            if (locations.length > 0) {
+                                const lat = locations[0].lat;
+                                const lon = locations[0].lon;
+                                L.marker([lat, lon]).addTo(map)
+                                    .bindPopup(`<b>${s.tipo_ayuda ?? ''}</b><br>${s.descripcion ?? ''}<br><small>${s.direccion}</small>`);
+                            }
+                        } catch (geoError) {
+                            // Si hay error de geocodificación, ignorar ese marcador
+                        }
+                    }
+                }
+            } catch (error) {
+                // Si hay error al cargar solicitantes, no mostrar marcadores
+            }
+        }
+        cargarMarcadoresSolicitantes();
 
-        L.marker([10.9186, -74.7647]).addTo(map)
-            .bindPopup('<b>Donación de medicamentos</b><br>Soledad centro');
+        // Cargar total de solicitudes activas
+        document.addEventListener('DOMContentLoaded', function() {
+            fetch('/api/total_solicitudes')
+                .then(res => res.json())
+                .then(data => {
+                    document.getElementById('solicitudes-activas').textContent = data.total ?? '0';
+                })
+                .catch(() => {
+                    document.getElementById('solicitudes-activas').textContent = '0';
+                });
+        });
 
-        L.marker([10.8599, -74.7735]).addTo(map)
-            .bindPopup('<b>Albergue temporal disponible</b><br>Malambo');
+        // Cargar total de solicitudes activas
+        document.addEventListener('DOMContentLoaded', function() {
+            fetch('/api/total_donaciones')
+                .then(res => res.json())
+                .then(data => {
+                    document.getElementById('donaciones-activas').textContent = data.total ?? '0';
+                })
+                .catch(() => {
+                    document.getElementById('donaciones-activas').textContent = '0';
+                });
+        });
     </script>
+
+    <!-- Cargar solicitudes recientes dinámicamente -->
+    <script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Cargar voluntarios activos (usuarios con rol donante)
+    fetch('/api/usuarios_donantes')
+        .then(res => res.json())
+        .then(data => {
+            document.getElementById('voluntarios-activos').textContent = data.total ?? '0';
+        })
+        .catch(() => {
+            document.getElementById('voluntarios-activos').textContent = '0';
+        });
+    // Cargar solicitudes recientes
+    fetch('/api/solicitantes_recientes')
+        .then(res => res.json())
+        .then(data => {
+            const tbody = document.querySelector('.table tbody');
+            tbody.innerHTML = "";
+            const colorList = [
+                "bg-primary",
+                "bg-success",
+                "bg-info",
+                "bg-warning text-dark",
+                "bg-secondary"
+            ];
+            data.forEach((s, i) => {
+                const tipoColor = colorList[i % colorList.length];
+                tbody.innerHTML += `
+                    <tr>
+                        <td><span class="badge ${tipoColor}">${s.tipo_ayuda ?? ''}</span></td>
+                        <td>${s.descripcion ?? ''}</td>
+                        <td>${s.direccion ?? ''}</td>
+                        <td><span class="user-type-indicator solicitante"></span> ${s.nombre ?? ''}</td>
+                        <td>${s.fecha_creacion ?? ''}</td>
+                        <td><span class="badge bg-warning text-dark">${s.estado ?? 'Pendiente'}</span></td>
+                        <td>
+                            <button class="btn btn-sm btn-outline-primary">Ver</button>
+                            <button class="btn btn-sm btn-outline-success">Ayudar</button>
+                        </td>
+                    </tr>
+                `;
+            });
+        })
+        .catch(() => {
+            // Puedes mostrar un mensaje de error aquí si lo deseas
+        });
+
+    // Cargar tipos de ayuda más solicitados
+    fetch('/api/tipos_ayuda_conteo')
+        .then(res => res.json())
+        .then(conteo => {
+            // Total para calcular porcentajes
+            const total = Object.values(conteo).reduce((a, b) => a + b, 0);
+            // Mapeo de colores igual al dashboard
+            const colorMap = {
+                "Alimentos": "bg-primary",
+                "Medicamentos": "bg-success",
+                "Ropa": "bg-info",
+                "Vivienda": "bg-warning text-dark",
+                "Otros": "bg-secondary",
+                "Otro": "bg-secondary"
+            };
+            // Selecciona el card correcto por el título
+            const cards = document.querySelectorAll('.card');
+            cards.forEach(card => {
+                const title = card.querySelector('.card-title');
+                if (title && title.textContent.includes('Tipos de Ayuda Más Solicitados')) {
+                    const ayudaContainer = card.querySelector('.card-body');
+                    if (ayudaContainer) {
+                        ayudaContainer.innerHTML = '';
+                        Object.entries(conteo).forEach(([tipo, cantidad]) => {
+                            const porcentaje = total ? Math.round((cantidad / total) * 100) : 0;
+                            const color = colorMap[tipo] || "bg-primary";
+                            ayudaContainer.innerHTML += `
+                                <div class="mb-3">
+                                    <span class="badge ${color} help-type-badge">${tipo} (${porcentaje}%)</span>
+                                    <div class="progress mt-1">
+                                        <div class="progress-bar ${color.replace('text-dark','')}" role="progressbar" style="width: ${porcentaje}%"></div>
+                                    </div>
+                                </div>
+                            `;
+                        });
+                    }
+                }
+            });
+        });
+});
+</script>
+
 </body>
 </html>

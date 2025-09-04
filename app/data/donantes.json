@@ -1,0 +1,57 @@
+[
+  {
+    "cedula": "963852",
+    "nombre": "lina",
+    "telefono": "345566",
+    "email": "l@lina.com",
+    "tipo_donacion": "medicamentos",
+    "cantidad": "10 cajas de ibuprofeno",
+    "disponibilidad": "martes 6:00pm",
+    "contactar": true,
+    "fecha_creacion": "2025-08-31 21:02:21"
+  },
+  {
+    "cedula": "741258",
+    "nombre": "roger",
+    "telefono": "3556699",
+    "email": "r@roger.com",
+    "tipo_donacion": "ropa",
+    "cantidad": "2 pantalones rotos",
+    "disponibilidad": "miercoles 6:30pm",
+    "contactar": false,
+    "fecha_creacion": "2025-08-31 21:07:41"
+  },
+  {
+    "cedula": "1129528057",
+    "nombre": "jhon doe",
+    "telefono": "3235248",
+    "email": "a@alf",
+    "tipo_donacion": "tiempo",
+    "cantidad": "5 horas",
+    "disponibilidad": "todo el dia",
+    "contactar": true,
+    "fecha_creacion": "2025-08-31 21:35:00"
+  },
+  {
+    "cedula": "784654564",
+    "nombre": "Carlos Amador",
+    "telefono": "7544844",
+    "email": "a@ale.com",
+    "tipo_donacion": "alimentos",
+    "cantidad": "10000",
+    "disponibilidad": "todo el dia",
+    "contactar": true,
+    "fecha_creacion": "2025-08-31 21:36:57"
+  },
+  {
+    "cedula": "5456465",
+    "nombre": "Camila A",
+    "telefono": "3237546",
+    "email": "a@ale.com",
+    "tipo_donacion": "dinero",
+    "cantidad": "50000",
+    "disponibilidad": "todo el dia",
+    "contactar": true,
+    "fecha_creacion": "2025-08-31 21:38:26"
+  }
+]

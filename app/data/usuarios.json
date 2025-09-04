@@ -4,13 +4,25 @@
     "user": "jperez",
     "email": "j@perez.com",
     "telefono": "3222222",
-    "password": "abc123"
+    "password": "abc123",
+    "rol": "solicitante",
+    "terms": true
   },
   {
     "nombre": "jhon doe",
     "user": "jdoe",
     "email": "j@doe.com",
     "telefono": "3111111",
-    "password": "cba321"
+    "password": "cba321",
+    "rol": "donante",
+    "terms": true
+  },
+  {
+    "nombre": "Alfredo Angarita",
+    "user": "Ang123",
+    "email": "a@angarita",
+    "telefono": "3013984864",
+    "password": "abc123**",
+    "rol": "donante"
   }
 ]

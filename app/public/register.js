@@ -5,13 +5,13 @@ document.getElementById("register-form").addEventListener("submit", async (e) =>
 
   
   const form = e.target;
-  console.log("Formulario enviado:", form);
+  //console.log("Formulario enviado:", form);
   const nombre = form.elements["nombre"].value;
   const user = form.elements["usuario"].value;
   const email = form.elements["email"].value;
   const telefono = form.elements["telefono"].value;
   const password = form.elements["password"].value;
-  const confirmPassword = form.elements["confirm-password"].value;
+  const rol = form.elements["rol"].value;
 
   try {
     const res = await fetch("http://localhost:4000/api/register", {
@@ -19,7 +19,7 @@ document.getElementById("register-form").addEventListener("submit", async (e) =>
       headers: {
         "Content-Type": "application/json"
       },
-      body: JSON.stringify({ nombre, user, email, telefono, password, confirmPassword })
+    body: JSON.stringify({ nombre, user, email, telefono, password, rol })
     });
 
     if (!res.ok) {
@@ -29,7 +29,8 @@ document.getElementById("register-form").addEventListener("submit", async (e) =>
 
     const resJson = await res.json();
     if (resJson.redirect) {
-      window.location.href = resJson.redirect;
+      //window.location.href = resJson.redirect;
+      window.location.href = "/dashboard.html";
     }
   } catch (error) {
     mensajeError.classList.toggle("escondido", false);
