@@ -434,6 +434,7 @@
     <!-- Cargar solicitudes recientes dinámicamente -->
     <script>
 document.addEventListener('DOMContentLoaded', function() {
+
     // Cargar voluntarios activos (usuarios con rol donante)
     fetch('/api/usuarios_donantes')
         .then(res => res.json())
@@ -443,39 +444,79 @@ document.addEventListener('DOMContentLoaded', function() {
         .catch(() => {
             document.getElementById('voluntarios-activos').textContent = '0';
         });
-    // Cargar solicitudes recientes
+
+    // --- Filtros ---
+    let solicitudesData = [];
+    const colorList = [
+        "bg-primary",
+        "bg-success",
+        "bg-info",
+        "bg-warning text-dark",
+        "bg-secondary"
+    ];
+
+    function renderSolicitudesTable(data) {
+        const tbody = document.querySelector('.table tbody');
+        tbody.innerHTML = "";
+        data.forEach((s, i) => {
+            const tipoColor = colorList[i % colorList.length];
+            tbody.innerHTML += `
+                <tr>
+                    <td><span class="badge ${tipoColor}">${s.tipo_ayuda ?? ''}</span></td>
+                    <td>${s.descripcion ?? ''}</td>
+                    <td>${s.direccion ?? ''}</td>
+                    <td><span class="user-type-indicator solicitante"></span> ${s.nombre ?? ''}</td>
+                    <td>${s.fecha_creacion ?? ''}</td>
+                    <td><span class="badge bg-warning text-dark">${s.estado ?? 'Pendiente'}</span></td>
+                    <td>
+                        <button class="btn btn-sm btn-outline-primary">Ver</button>
+                        <button class="btn btn-sm btn-outline-success">Ayudar</button>
+                    </td>
+                </tr>
+            `;
+        });
+    }
+
+    function filtrarSolicitudes() {
+        const tipoAyuda = document.querySelectorAll('.card-body .form-select')[0].value;
+        const ubicacion = document.querySelectorAll('.card-body .form-select')[1].value;
+        const estado = document.querySelectorAll('.card-body .form-select')[2].value;
+        const fecha = document.querySelector('.card-body input[type="date"]').value;
+
+        let filtradas = solicitudesData;
+        if (tipoAyuda && tipoAyuda !== 'Todas') {
+            filtradas = filtradas.filter(s => (s.tipo_ayuda || '').toLowerCase() === tipoAyuda.toLowerCase());
+        }
+        if (ubicacion && ubicacion !== 'Todas') {
+            filtradas = filtradas.filter(s => (s.direccion || '').toLowerCase().includes(ubicacion.toLowerCase()));
+        }
+        if (estado && estado !== 'Todos') {
+            filtradas = filtradas.filter(s => (s.estado || 'Pendiente').toLowerCase() === estado.toLowerCase());
+        }
+        if (fecha) {
+            filtradas = filtradas.filter(s => (s.fecha_creacion || '').slice(0,10) === fecha);
+        }
+        renderSolicitudesTable(filtradas);
+    }
+
+    // Asignar eventos a los filtros
+    setTimeout(() => {
+        const selects = document.querySelectorAll('.card-body .form-select');
+        selects.forEach(sel => sel.addEventListener('change', filtrarSolicitudes));
+        const fechaInput = document.querySelector('.card-body input[type="date"]');
+        if (fechaInput) fechaInput.addEventListener('change', filtrarSolicitudes);
+    }, 500);
+
+    // Cargar solicitudes recientes y guardar en variable global
     fetch('/api/solicitantes_recientes')
         .then(res => res.json())
         .then(data => {
-            const tbody = document.querySelector('.table tbody');
-            tbody.innerHTML = "";
-            const colorList = [
-                "bg-primary",
-                "bg-success",
-                "bg-info",
-                "bg-warning text-dark",
-                "bg-secondary"
-            ];
-            data.forEach((s, i) => {
-                const tipoColor = colorList[i % colorList.length];
-                tbody.innerHTML += `
-                    <tr>
-                        <td><span class="badge ${tipoColor}">${s.tipo_ayuda ?? ''}</span></td>
-                        <td>${s.descripcion ?? ''}</td>
-                        <td>${s.direccion ?? ''}</td>
-                        <td><span class="user-type-indicator solicitante"></span> ${s.nombre ?? ''}</td>
-                        <td>${s.fecha_creacion ?? ''}</td>
-                        <td><span class="badge bg-warning text-dark">${s.estado ?? 'Pendiente'}</span></td>
-                        <td>
-                            <button class="btn btn-sm btn-outline-primary">Ver</button>
-                            <button class="btn btn-sm btn-outline-success">Ayudar</button>
-                        </td>
-                    </tr>
-                `;
-            });
+            solicitudesData = data;
+            renderSolicitudesTable(solicitudesData);
         })
         .catch(() => {
-            // Puedes mostrar un mensaje de error aquí si lo deseas
+            solicitudesData = [];
+            renderSolicitudesTable([]);
         });
 
     // Cargar tipos de ayuda más solicitados
