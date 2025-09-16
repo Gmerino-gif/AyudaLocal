@@ -23,6 +23,7 @@
     "email": "a@angarita",
     "telefono": "3013984864",
     "password": "abc123**",
-    "rol": "donante"
+    "rol": "donante",
+    "terms": true
   }
 ]

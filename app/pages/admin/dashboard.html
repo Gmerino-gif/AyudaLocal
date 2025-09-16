@@ -378,33 +378,7 @@
         }).addTo(map);
 
         // Cargar y mostrar marcadores reales desde solicitantes.json
-        async function cargarMarcadoresSolicitantes() {
-            try {
-                const res = await fetch('/api/solicitantes_recientes');
-                const data = await res.json();
-                for (const s of data) {
-                    if (s.direccion) {
-                        // Esperar 1 segundo entre peticiones para evitar bloqueo de Nominatim
-                        await new Promise(resolve => setTimeout(resolve, 1000));
-                        try {
-                            const geoRes = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(s.direccion + ', Atlántico, Colombia')}`);
-                            const locations = await geoRes.json();
-                            if (locations.length > 0) {
-                                const lat = locations[0].lat;
-                                const lon = locations[0].lon;
-                                L.marker([lat, lon]).addTo(map)
-                                    .bindPopup(`<b>${s.tipo_ayuda ?? ''}</b><br>${s.descripcion ?? ''}<br><small>${s.direccion}</small>`);
-                            }
-                        } catch (geoError) {
-                            // Si hay error de geocodificación, ignorar ese marcador
-                        }
-                    }
-                }
-            } catch (error) {
-                // Si hay error al cargar solicitantes, no mostrar marcadores
-            }
-        }
-        cargarMarcadoresSolicitantes();
+    // Los marcadores ahora se actualizan automáticamente según los filtros aplicados en el dashboard
 
         // Cargar total de solicitudes activas
         document.addEventListener('DOMContentLoaded', function() {
@@ -455,27 +429,131 @@ document.addEventListener('DOMContentLoaded', function() {
         "bg-secondary"
     ];
 
+    // --- MAPA: gestión de marcadores ---
+    let mapMarkers = [];
+    async function renderMapMarkers(data) {
+        // Eliminar marcadores previos
+        mapMarkers.forEach(m => map.removeLayer(m));
+        mapMarkers = [];
+        for (const s of data) {
+            if (s.direccion) {
+                try {
+                    // Espera corta para evitar bloqueo de Nominatim
+                    await new Promise(resolve => setTimeout(resolve, 300));
+                    const geoRes = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(s.direccion + ', Atlántico, Colombia')}`);
+                    const locations = await geoRes.json();
+                    if (locations.length > 0) {
+                        const lat = locations[0].lat;
+                        const lon = locations[0].lon;
+                        const marker = L.marker([lat, lon]).addTo(map)
+                            .bindPopup(`<b>${s.tipo_ayuda ?? ''}</b><br>${s.descripcion ?? ''}<br><small>${s.direccion}</small>`);
+                        mapMarkers.push(marker);
+                    }
+                } catch (e) { /* ignorar errores */ }
+            }
+        }
+    }
+
     function renderSolicitudesTable(data) {
         const tbody = document.querySelector('.table tbody');
         tbody.innerHTML = "";
         data.forEach((s, i) => {
             const tipoColor = colorList[i % colorList.length];
+            let estado = (s.estado ?? 'Pendiente').toLowerCase();
+            let estadoBadge = '';
+            if (estado === 'pendiente') {
+                estadoBadge = 'bg-warning text-dark';
+            } else if (estado === 'en proceso') {
+                estadoBadge = 'bg-info';
+            } else if (estado === 'completado') {
+                estadoBadge = 'bg-success';
+            } else if (estado === 'urgente') {
+                estadoBadge = 'bg-danger';
+            } else {
+                estadoBadge = 'bg-secondary';
+            }
             tbody.innerHTML += `
-                <tr>
+                <tr data-index="${i}">
                     <td><span class="badge ${tipoColor}">${s.tipo_ayuda ?? ''}</span></td>
                     <td>${s.descripcion ?? ''}</td>
                     <td>${s.direccion ?? ''}</td>
                     <td><span class="user-type-indicator solicitante"></span> ${s.nombre ?? ''}</td>
                     <td>${s.fecha_creacion ?? ''}</td>
-                    <td><span class="badge bg-warning text-dark">${s.estado ?? 'Pendiente'}</span></td>
+                    <td><span class="badge ${estadoBadge}">${s.estado ?? 'Pendiente'}</span></td>
                     <td>
-                        <button class="btn btn-sm btn-outline-primary">Ver</button>
-                        <button class="btn btn-sm btn-outline-success">Ayudar</button>
+                        <button class="btn btn-sm btn-outline-primary btn-ver">Ver</button>
+                        <button class="btn btn-sm btn-outline-success btn-ayudar" ${s.estado && s.estado.toLowerCase() !== 'pendiente' ? 'disabled' : ''}>Ayudar</button>
                     </td>
                 </tr>
             `;
         });
+        // Acciones para los botones Ver y Ayudar
+        setTimeout(() => {
+            document.querySelectorAll('.btn-ver').forEach(btn => {
+                btn.onclick = function() {
+                    const tr = btn.closest('tr');
+                    const idx = parseInt(tr.getAttribute('data-index'));
+                    const solicitud = data[idx];
+                    mostrarModalDetalle(solicitud);
+                };
+            });
+            document.querySelectorAll('.btn-ayudar').forEach(btn => {
+                btn.onclick = function() {
+                    const tr = btn.closest('tr');
+                    const idx = parseInt(tr.getAttribute('data-index'));
+                    if (data[idx].estado && data[idx].estado.toLowerCase() !== 'pendiente') return;
+                    data[idx].estado = 'En proceso';
+                    renderSolicitudesTable(data);
+                };
+            });
+        }, 100);
+        // Actualizar marcadores del mapa según la tabla
+        renderMapMarkers(data);
     }
+        // Modal para mostrar detalles de la solicitud
+        function mostrarModalDetalle(solicitud) {
+                let modal = document.getElementById('modalDetalleSolicitud');
+                if (!modal) {
+                        modal = document.createElement('div');
+                        modal.id = 'modalDetalleSolicitud';
+                        modal.innerHTML = `
+                                <div class="modal fade" tabindex="-1">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title">Detalle de Solicitud</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <ul class="list-group">
+                                                    <li class="list-group-item"><b>Tipo de ayuda:</b> <span id="detalle-tipo"></span></li>
+                                                    <li class="list-group-item"><b>Descripción:</b> <span id="detalle-desc"></span></li>
+                                                    <li class="list-group-item"><b>Dirección:</b> <span id="detalle-dir"></span></li>
+                                                    <li class="list-group-item"><b>Solicitante:</b> <span id="detalle-nombre"></span></li>
+                                                    <li class="list-group-item"><b>Fecha:</b> <span id="detalle-fecha"></span></li>
+                                                    <li class="list-group-item"><b>Estado:</b> <span id="detalle-estado"></span></li>
+                                                </ul>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                        `;
+                        document.body.appendChild(modal);
+                }
+                // Rellenar datos
+                modal.querySelector('#detalle-tipo').textContent = solicitud.tipo_ayuda ?? '';
+                modal.querySelector('#detalle-desc').textContent = solicitud.descripcion ?? '';
+                modal.querySelector('#detalle-dir').textContent = solicitud.direccion ?? '';
+                modal.querySelector('#detalle-nombre').textContent = solicitud.nombre ?? '';
+                modal.querySelector('#detalle-fecha').textContent = solicitud.fecha_creacion ?? '';
+                modal.querySelector('#detalle-estado').textContent = solicitud.estado ?? 'Pendiente';
+                // Mostrar modal
+                const bsModal = new bootstrap.Modal(modal.querySelector('.modal'));
+                bsModal.show();
+        }
 
     function filtrarSolicitudes() {
         const tipoAyuda = document.querySelectorAll('.card-body .form-select')[0].value;

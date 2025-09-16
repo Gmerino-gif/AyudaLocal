@@ -53,5 +53,16 @@
     "disponibilidad": "todo el dia",
     "contactar": true,
     "fecha_creacion": "2025-08-31 21:38:26"
+  },
+  {
+    "cedula": "1129528057",
+    "nombre": "Karen Gonzalez",
+    "telefono": "3012237348",
+    "email": "k@gonzalez",
+    "tipo_donacion": "dinero",
+    "cantidad": "50000",
+    "disponibilidad": "Siempre",
+    "contactar": true,
+    "fecha_creacion": "2025-09-16 01:55:00"
   }
 ]

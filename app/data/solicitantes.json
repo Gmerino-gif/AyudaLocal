@@ -70,5 +70,17 @@
     "urgente": true,
     "estado": "pendiente",
     "fecha_creacion": "2025-08-31 21:25:02"
+  },
+  {
+    "cedula": "72428228",
+    "nombre": "Alberto Barrios",
+    "telefono": "3013394865",
+    "email": "abarrios@gmail.com",
+    "tipo_ayuda": "ropa",
+    "descripcion": "Ncesesito varios pantalones",
+    "direccion": "Carrera 8b # 56-27 Ciudadela Metropolitana",
+    "urgente": true,
+    "estado": "pendiente",
+    "fecha_creacion": "2025-09-16 01:52:23"
   }
 ]
