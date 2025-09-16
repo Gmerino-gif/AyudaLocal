@@ -68,7 +68,7 @@
     <!-- Barra de navegación -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container">
-            <a class="navbar-brand" href="#">AyudaLocal</a>
+            <a class="navbar-brand" href="/app/pages/index.html">AyudaLocal</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
@@ -457,8 +457,18 @@ document.addEventListener('DOMContentLoaded', function() {
     function renderSolicitudesTable(data) {
         const tbody = document.querySelector('.table tbody');
         tbody.innerHTML = "";
+        // Mapeo de colores por tipo de ayuda
+        const tipoColorMap = {
+            'alimentos': 'bg-primary',
+            'medicamentos': 'bg-success',
+            'ropa': 'bg-info',
+            'vivienda': 'bg-warning text-dark',
+            'otro': 'bg-secondary',
+            'otros': 'bg-secondary'
+        };
         data.forEach((s, i) => {
-            const tipoColor = colorList[i % colorList.length];
+            const tipo = (s.tipo_ayuda || '').toLowerCase();
+            const tipoColor = tipoColorMap[tipo] || 'bg-secondary';
             let estado = (s.estado ?? 'Pendiente').toLowerCase();
             let estadoBadge = '';
             if (estado === 'pendiente') {
@@ -502,8 +512,28 @@ document.addEventListener('DOMContentLoaded', function() {
                     const tr = btn.closest('tr');
                     const idx = parseInt(tr.getAttribute('data-index'));
                     if (data[idx].estado && data[idx].estado.toLowerCase() !== 'pendiente') return;
-                    data[idx].estado = 'En proceso';
-                    renderSolicitudesTable(data);
+                    data[idx].estado = 'En progreso';
+                    // Actualizar la etiqueta de estado en la fila
+                    const tdEstado = tr.querySelector('td:nth-child(6) .badge');
+                    if (tdEstado) {
+                        tdEstado.textContent = 'En progreso';
+                        tdEstado.className = 'badge bg-info';
+                    }
+                    // Insertar botón Completar
+                    const tdAcciones = tr.querySelector('td:last-child');
+                    tdAcciones.innerHTML = `
+                        <button class="btn btn-sm btn-outline-primary btn-ver">Ver</button>
+                        <button class="btn btn-sm btn-success btn-completar">Completar</button>
+                    `;
+                    // Reasignar evento Ver
+                    tdAcciones.querySelector('.btn-ver').onclick = function() {
+                        mostrarModalDetalle(data[idx]);
+                    };
+                    // Evento Completar
+                    tdAcciones.querySelector('.btn-completar').onclick = function() {
+                        data[idx].estado = 'Completado';
+                        renderSolicitudesTable(data);
+                    };
                 };
             });
         }, 100);
@@ -603,14 +633,14 @@ document.addEventListener('DOMContentLoaded', function() {
         .then(conteo => {
             // Total para calcular porcentajes
             const total = Object.values(conteo).reduce((a, b) => a + b, 0);
-            // Mapeo de colores igual al dashboard
-            const colorMap = {
-                "Alimentos": "bg-primary",
-                "Medicamentos": "bg-success",
-                "Ropa": "bg-info",
-                "Vivienda": "bg-warning text-dark",
-                "Otros": "bg-secondary",
-                "Otro": "bg-secondary"
+            // Mapeo de colores igual a la tabla de solicitudes recientes
+            const tipoColorMap = {
+                'alimentos': 'bg-primary',
+                'medicamentos': 'bg-success',
+                'ropa': 'bg-info',
+                'vivienda': 'bg-warning text-dark',
+                'otro': 'bg-secondary',
+                'otros': 'bg-secondary'
             };
             // Selecciona el card correcto por el título
             const cards = document.querySelectorAll('.card');
@@ -622,7 +652,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         ayudaContainer.innerHTML = '';
                         Object.entries(conteo).forEach(([tipo, cantidad]) => {
                             const porcentaje = total ? Math.round((cantidad / total) * 100) : 0;
-                            const color = colorMap[tipo] || "bg-primary";
+                            const color = tipoColorMap[tipo.toLowerCase()] || "bg-secondary";
                             ayudaContainer.innerHTML += `
                                 <div class="mb-3">
                                     <span class="badge ${color} help-type-badge">${tipo} (${porcentaje}%)</span>
