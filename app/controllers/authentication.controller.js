@@ -26,7 +26,7 @@ async function login(req, res) {
     } catch (err) {
       usuarios = [];
     }
-    console.log(usuarios);
+
     const usuarioARevisar = usuarios.find(usuario => usuario.user === user);
     if(!usuarioARevisar) {
       return res.status(400).send({status:"Error", message:"Error durante login"});
@@ -36,7 +36,11 @@ async function login(req, res) {
     if(!loginCorrecto) {
       return res.status(400).send({status:"Error", message:"Error durante login"});
     }
-    
+
+    // Preparar datos del usuario para frontend (sin contraseña)
+    const usuarioSinPassword = { ...usuarioARevisar };
+    delete usuarioSinPassword.password;
+
     const token = jsonwebtoken.sign(
       {user: usuarioARevisar.user},
       process.env.JWT_SECRET,
@@ -49,7 +53,12 @@ async function login(req, res) {
     };
     
     res.cookie("jwt", token, cookieOption);
-    res.send({status:"ok", message:"Usuario loggeado", redirect:"/dashboard.html"});
+    res.send({
+      status: "ok",
+      message: "Usuario loggeado",
+      redirect: "/dashboard.html",
+      usuario: usuarioSinPassword
+    });
     
   } catch (error) {
     console.error("Error en login:", error);
@@ -78,7 +87,6 @@ async function register(req, res) {
       user, email, password: hashPassword
     };
     
-    console.log(nuevoUsuario);
     usuarios.push(nuevoUsuario);
     return res.status(201).send({status:"ok", message:`Usuario ${nuevoUsuario.user} agregado`, redirect:"/"});
     

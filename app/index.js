@@ -16,6 +16,8 @@ console.log("Servidor corriendo en puerto", app.get("port"));
 
 // Configuración
 app.use(express.static(__dirname + "/public"));
+// Servir archivos estáticos desde la carpeta 'pages' para los HTML
+app.use(express.static(__dirname + "/pages"));
 app.use(express.json());
 app.use(cookieParser());
 
@@ -233,4 +235,10 @@ app.get("/api/solicitantes_recientes", authorization.soloAdmin, async (req, res)
     } catch (error) {
         return res.status(500).json({ status: "Error", message: "Error al cargar las solicitudes recientes" });
     }
+});
+
+// API para cerrar sesión
+app.post('/api/logout', (req, res) => {
+    res.clearCookie('jwt'); // Cambia 'token' por el nombre real de la cookie si es diferente
+    return res.status(200).json({ status: 'Ok', message: 'Sesión cerrada' });
 });

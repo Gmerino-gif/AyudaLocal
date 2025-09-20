@@ -5,7 +5,7 @@ document.getElementById("register-form").addEventListener("submit", async (e) =>
 
   
   const form = e.target;
-  //console.log("Formulario enviado:", form);
+
   const nombre = form.elements["nombre"].value;
   const user = form.elements["usuario"].value;
   const email = form.elements["email"].value;

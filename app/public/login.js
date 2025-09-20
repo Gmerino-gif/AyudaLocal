@@ -17,8 +17,12 @@ document.getElementById("login-form").addEventListener("submit", async (e) => {
 
         if (!res.ok) return mensajeError.classList.toggle("escondido", false);
         const resJson = await res.json();
+        if (resJson.usuario) {
+            // Guardar usuario en localStorage (sin contraseña)
+            localStorage.setItem('usuarioLogueado', JSON.stringify(resJson.usuario));
+        }
         if (resJson.redirect) {
-        window.location.href = resJson.redirect;
+            window.location.href = resJson.redirect;
         }
     
 })
