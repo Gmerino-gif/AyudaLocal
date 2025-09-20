@@ -1,0 +1,17 @@
+# Node modules
+/node_modules
+
+# Environment variables
+.env
+
+# Build artifacts
+/dist
+/build
+/out
+
+# Editor/OS specific files
+.DS_Store
+.vscode/
+*.sublime-project
+*.sublime-workspace
+Thumbs.db
