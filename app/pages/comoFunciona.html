@@ -1,11 +1,149 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>AyudaLocal - ¿Cómo funciona?</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <style>
+        body {
+            background-color: #f5f7fa;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #333;
+        }
+        .hero-section {
+            background: linear-gradient(135deg, #4b6cb7 0%, #182848 100%);
+            color: white;
+            padding: 3rem 0 2rem 0;
+            text-align: center;
+            border-radius: 0 0 30px 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+        }
+        .hero-section img {
+            max-width: 350px;
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+            margin-bottom: 1.5rem;
+        }
+        .section-title {
+            font-size: 2.2rem;
+            color: #182848;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+        .steps-section {
+            max-width: 900px;
+            margin: 2rem auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.07);
+            padding: 2.5rem;
+        }
+        .step {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+            margin-bottom: 2.5rem;
+        }
+        .step img {
+            width: 120px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+        .step-content {
+            flex: 1;
+        }
+        .step-title {
+            font-size: 1.3rem;
+            color: #4b6cb7;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        .step-desc {
+            color: #555;
+        }
+        .cta-section {
+            text-align: center;
+            margin: 3rem 0 2rem 0;
+        }
+        .btn-cta {
+            background-color: #ff6b6b;
+            color: white;
+            font-size: 1.2rem;
+            padding: 1rem 2.5rem;
+            border-radius: 30px;
+            border: none;
+            font-weight: 600;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            transition: background 0.3s;
+        }
+        .btn-cta:hover {
+            background-color: #ff5252;
+        }
+        .back-btn {
+            margin-top: 2rem;
+            width: 100%;
+        }
+        @media (max-width: 768px) {
+            .step {
+                flex-direction: column;
+                text-align: center;
+            }
+            .steps-section {
+                padding: 1.2rem;
+            }
+        }
+    </style>
 </head>
 <body>
-    <h1>Como funciona</h1>
+    <div class="hero-section">
+        <img src="https://images.pexels.com/photos/4125007/pexels-photo-4125007.jpeg" alt="Ayuda comunitaria" loading="lazy">
+        <h1><i class="bi bi-lightbulb-fill"></i> ¿Cómo funciona AyudaLocal?</h1>
+        <p class="lead">Conectamos necesidades reales con voluntarios y donantes locales, usando tecnología y solidaridad.</p>
+    </div>
+    <section class="steps-section">
+        <h2 class="section-title">Pasos para usar AyudaLocal</h2>
+        <div class="step">
+            <img src="https://images.unsplash.com/photo-1515378791036-0648a3ef77b2?auto=format&fit=crop&w=400&q=80" alt="Registro" loading="lazy">
+            <div class="step-content">
+                <div class="step-title"><i class="bi bi-person-plus-fill"></i> 1. Regístrate</div>
+                <div class="step-desc">Crea tu cuenta como solicitante, donante o voluntario. Completa el formulario y selecciona tu rol para empezar a participar.</div>
+            </div>
+        </div>
+        <div class="step">
+            <img src="https://images.pexels.com/photos/7551587/pexels-photo-7551587.jpeg" alt="Solicita ayuda" loading="lazy">
+            <div class="step-content">
+                <div class="step-title"><i class="bi bi-clipboard-plus"></i> 2. Solicita o ofrece ayuda</div>
+                <div class="step-desc">Publica una solicitud si necesitas ayuda, o una oferta si quieres donar recursos o tiempo. Especifica el tipo de ayuda y tu ubicación.</div>
+            </div>
+        </div>
+        <div class="step">
+            <img src="https://images.pexels.com/photos/33998346/pexels-photo-33998346.jpeg" alt="Asignación" loading="lazy">
+            <div class="step-content">
+                <div class="step-title"><i class="bi bi-geo-alt-fill"></i> 3. Asignación inteligente</div>
+                <div class="step-desc">El sistema asigna voluntarios y donantes cercanos a las solicitudes, priorizando urgencia y proximidad mediante geolocalización y análisis de datos.</div>
+            </div>
+        </div>
+        <div class="step">
+            <img src="https://images.unsplash.com/photo-1503676382389-4809596d5290?auto=format&fit=crop&w=400&q=80" alt="Comunicación" loading="lazy">
+            <div class="step-content">
+                <div class="step-title"><i class="bi bi-chat-dots-fill"></i> 4. Comunicación segura</div>
+                <div class="step-desc">Solicitantes y donantes pueden comunicarse a través de la plataforma, sin compartir datos personales, para coordinar la ayuda de forma segura.</div>
+            </div>
+        </div>
+        <div class="step">
+            <img src="https://images.pexels.com/photos/3184292/pexels-photo-3184292.jpeg" alt="Impacto IA" loading="lazy">
+            <div class="step-content">
+                <div class="step-title"><i class="bi bi-bar-chart-fill"></i> 5. Monitorea el impacto</div>
+                <div class="step-desc">Visualiza el estado de tus solicitudes, donaciones y el impacto generado en la comunidad desde el dashboard en tiempo real.</div>
+            </div>
+        </div>
+    </section>
+    <section class="cta-section">
+        <a href="register.html" class="btn btn-cta"><i class="bi bi-person-plus"></i> ¡Regístrate ahora y sé parte del cambio!</a>
+        <a href="index.html" class="btn btn-outline-secondary back-btn"><i class="bi bi-arrow-left"></i> Volver al Inicio</a>
+    </section>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
